@@ -1,14 +1,13 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
+import { FoxService } from './fox.service';
+import { CreateFoxDto } from './dto/create-fox.dto';
 
 @Controller('/fox')
 export class FoxController {
-  @Get('/')
-  getItem(): string {
-    return 'my item';
-  }
+  constructor(@Inject(FoxService) private foxService: FoxService) {}
 
   @Post('/')
-  postItem(): string {
-    return 'Ok!';
+  createFox(@Body() newFox: CreateFoxDto): string {
+    return this.foxService.createFox(newFox);
   }
 }
