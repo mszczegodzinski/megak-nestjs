@@ -1,25 +1,64 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { AddProductDto } from './dto/add-product.dto';
-import { AddProductToBasketResponse } from 'src/interfaces/basket';
+import {
+  AddProductToBasketResponse,
+  GetTotalPriceResponse,
+  ListProductsInBasketResponse,
+  RemoveProductFromBasketResponse,
+} from 'src/interfaces/basket';
+import { ShopService } from 'src/shop/shop.service';
 
 @Injectable()
 export class BasketService {
   private items: AddProductDto[] = [];
 
+  constructor(@Inject(ShopService) private shopService: ShopService) {}
+
   add(item: AddProductDto): AddProductToBasketResponse {
+    const { count, name } = item;
     if (
-      typeof item.name !== 'string' ||
-      typeof item.count !== 'number' ||
-      item.count < 1 ||
-      !item.name.length
+      typeof name !== 'string' ||
+      typeof count !== 'number' ||
+      count < 1 ||
+      !name.length ||
+      !this.shopService.hasProduct(name)
     ) {
       return { isSuccess: false };
     }
 
     this.items.push(item);
 
-    console.log('Basket items:', this.items);
-
     return { isSuccess: true, index: this.items.length - 1 };
+  }
+
+  remove(index: number): RemoveProductFromBasketResponse {
+    const { items } = this;
+    if (index < 0 || index >= items.length) {
+      return { isSuccess: false };
+    }
+
+    items.splice(index, 1);
+
+    return { isSuccess: true };
+  }
+
+  list(): ListProductsInBasketResponse {
+    return this.items;
+  }
+
+  getTotalPrice(): GetTotalPriceResponse {
+    if (!this.items.every(item => this.shopService.hasProduct(item.name))) {
+      const alternativeBasket = this.items.filter(item =>
+        this.shopService.hasProduct(item.name),
+      );
+      return { isSuccess: false, alternativeBasket };
+    }
+
+    return this.items
+      .map(
+        item =>
+          this.shopService.getPriceOfProduct(item.name) * item.count * 1.23,
+      )
+      .reduce((prev, curr) => prev + curr, 0);
   }
 }
