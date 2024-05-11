@@ -157,4 +157,4 @@ dist
 /storage
 
 # ormconfig.json
-/ormconfig.json
+ormconfig.json
