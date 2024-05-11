@@ -7,12 +7,7 @@ import { ShopModule } from './shop/shop.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [
-    // TypeOrmModule.forRoot(),
-    BasketModule,
-    ShopModule,
-    UsersModule,
-  ],
+  imports: [TypeOrmModule.forRoot(), BasketModule, ShopModule, UsersModule],
   controllers: [AppController],
   providers: [AppService],
 })

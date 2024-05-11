@@ -155,3 +155,6 @@ dist
 
 # compiled output
 /storage
+
+# ormconfig.json
+/ormconfig.json
