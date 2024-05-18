@@ -2,9 +2,14 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ShopItemDetails } from './shop-item-details.entity';
 
 @Entity()
 export class ShopItem extends BaseEntity implements ShopItem {
@@ -40,4 +45,22 @@ export class ShopItem extends BaseEntity implements ShopItem {
 
   @Column({ default: false })
   wasEverBought: boolean;
+
+  @OneToOne(() => ShopItemDetails)
+  @JoinColumn()
+  details: ShopItemDetails;
+
+  /* Subproduct */
+  @ManyToOne(
+    () => ShopItem,
+    entity => entity.subShopItems,
+  )
+  mainShopItem: ShopItem;
+
+  /* Main product */
+  @OneToMany(
+    () => ShopItem,
+    entity => entity.mainShopItem,
+  )
+  subShopItems: ShopItem[];
 }
