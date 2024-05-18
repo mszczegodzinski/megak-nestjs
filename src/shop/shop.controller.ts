@@ -1,38 +1,50 @@
 import {
   Controller,
+  Delete,
   Get,
   HostParam,
   Inject,
   Param,
-  Redirect,
+  Post,
 } from '@nestjs/common';
-import { GetListOfProductsResponse } from 'src/interfaces/shop';
+import {
+  CreateProductResponse,
+  GetListOfProductsResponse,
+  GetOneProductResponse,
+  GetPaginatedListOfProductsResponse,
+} from 'src/interfaces/shop';
 import { ShopService } from './shop.service';
 
 @Controller({
   path: 'shop',
-  host: ':name.lvh.me',
 })
 export class ShopController {
   constructor(@Inject(ShopService) private shopService: ShopService) {}
 
-  @Get('/')
-  getListOfProducts(): GetListOfProductsResponse {
-    return this.shopService.getProducts();
+  @Get('/:page')
+  getListOfProducts(
+    @Param('page') page: string,
+  ): Promise<GetPaginatedListOfProductsResponse> {
+    return this.shopService.getProducts(Number(page));
   }
 
-  // @Get('/test/:age')
-  // @Redirect()
-  // testRedirect(@Param('age') age: string) {
-  //   const url = Number(age) > 18 ? '/site' : '/block';
-  //   return {
-  //     url,
-  //     statusCode: 302,
-  //   };
-  // }
+  @Get('/find')
+  testFindItem(): Promise<GetListOfProductsResponse> {
+    return this.shopService.findProducts();
+  }
 
-  @Get('/welcome')
-  welcome(@HostParam('name') siteName: string): string {
-    return `Witaj w sklepie ${siteName}`;
+  @Get('/:id')
+  getOneProduct(@Param('id') id: string): Promise<GetOneProductResponse> {
+    return this.shopService.getOneProduct(id);
+  }
+
+  @Delete('/:id')
+  removeProduct(@Param('id') id: string): Promise<void> {
+    return this.shopService.removeProduct(id);
+  }
+
+  @Post('/')
+  createNewProduct(): Promise<CreateProductResponse> {
+    return this.shopService.createDummyProduct();
   }
 }

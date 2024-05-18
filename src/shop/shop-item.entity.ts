@@ -1,12 +1,19 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
-export class ShopItem {
+export class ShopItem extends BaseEntity implements ShopItem {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({
-    length: 60,
+    length: 50,
+    default: '',
   })
   name: string;
 
@@ -27,4 +34,10 @@ export class ShopItem {
     default: () => 'CURRENT_TIMESTAMP',
   })
   createdAt: Date;
+
+  @Column({ default: 0 })
+  boughtCounter: number;
+
+  @Column({ default: false })
+  wasEverBought: boolean;
 }
