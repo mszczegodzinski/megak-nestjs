@@ -1,7 +1,6 @@
-export interface ShopItem {
+export interface ShopItemInterface {
+  id: string;
   name: string;
   description: string;
   price: number;
 }
-
-export type GetListOfProductsResponse = ShopItem[];

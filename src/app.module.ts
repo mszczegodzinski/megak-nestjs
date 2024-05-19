@@ -8,9 +8,7 @@ import { BasketController } from './basket/basket.controller';
 import { BasketService } from './basket/basket.service';
 
 @Module({
-  imports: [
-    // TypeOrmModule.forRoot(),
-  ],
+  imports: [TypeOrmModule.forRoot()],
   controllers: [AppController, ShopController, BasketController],
   providers: [AppService, ShopService, BasketService],
 })
